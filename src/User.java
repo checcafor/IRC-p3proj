@@ -1,6 +1,6 @@
 public class User implements Observer {
     private String username;
-    private Channel currentChannel;
+    private ConcreteChannel currentChannel;
 
     public User(String username) {
         currentChannel = null;
@@ -11,7 +11,7 @@ public class User implements Observer {
         return username;
     }
 
-    public void joinChannel (Channel channel) {
+    public void joinChannel (ConcreteChannel channel) {
         if (currentChannel != null) {
             currentChannel.removeUser(this);
         }

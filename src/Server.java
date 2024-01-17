@@ -23,7 +23,7 @@ public class Server {
 
     public void addChannel (String name) {
         ChannelFactory factory = new ChannelFactory();
-        Channel channel = factory.createChannel(name);
+        ConcreteChannel channel = factory.createChannel(name);
     }
 
     public void addUser (User user, String username) {
