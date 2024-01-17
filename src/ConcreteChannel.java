@@ -50,4 +50,8 @@ public class ConcreteChannel implements Channel {
     public void promote(User user) {
         // aggiungi a lista admin
     }
+
+    public void sendMessage(String message) {
+        ////////////
+    }
 }

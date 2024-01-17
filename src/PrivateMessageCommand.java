@@ -1,4 +1,5 @@
 public class PrivateMessageCommand implements Command {
+    private Server server;
     private User sender;
     private String receiverUsername;
     private String message;
@@ -7,11 +8,11 @@ public class PrivateMessageCommand implements Command {
         this.sender = sender;
         this.receiverUsername = receiverUsername;
         this.message = message;
+        this.server = Server.getInstance();
     }
 
     @Override
     public void execute() {
-        Server server = Server.getInstance();
         User receiver = server.getUserByName(receiverUsername);
 
         if (receiver != null) {

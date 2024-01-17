@@ -1,16 +1,16 @@
-public class JoinCommand implements Command {
+public class JoinChannelCommand implements Command {
     private Server server;
     private User user;
     private ConcreteChannel channel;
 
-    public JoinCommand(Server server, User user, ConcreteChannel channel) {
+    public JoinChannelCommand(Server server, User user, ConcreteChannel channel) {
         this.server = server;
         this.user = user;
         this.channel = channel;
     }
 
     @Override
-    public void execute() {
+    public void execute() { // utilizzare funzione da concretechannel
         String channelName = channel.getName();
 
         Channel channel = server.getChannels().stream()

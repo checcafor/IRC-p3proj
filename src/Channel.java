@@ -10,4 +10,5 @@ public interface Channel {
     public void banUser(User user);
     public void unbanUser(User user);
     public void promote(User user);
+    public void sendMessage(String message);
 }
