@@ -1,13 +1,14 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class ConcreteChannel implements Channel {
-    private String name;
-    private List<Observer> users;
+    private String name; // nome del canale
+    private List<Observer> users; // lista contenente gli oggetti che implementano l'interfaccia ( user e admin )
+    private Set<String> bannedUsers;
 
-    public ConcreteChannel(String name) {
+    public ConcreteChannel(String name) { // costruttore
         this.name = name;
         users = new ArrayList<>();
+        bannedUsers = new HashSet<>();
     }
 
     public String getName() {
@@ -22,11 +23,9 @@ public class ConcreteChannel implements Channel {
         users.remove(user);
     }
 
-    public void broadcastMessage(User sender, String message) {
+    public void notify (String message) {
         for(Observer user : users) {
-            if (user != sender) {
-                user.update(message);
-            }
+            user.update(message);
         }
     }
 
@@ -35,23 +34,43 @@ public class ConcreteChannel implements Channel {
     }
 
     public void kickUser(User user) {
-        removeUser(user);
+        user.getPrintWriter().println(" you've been kicked from #" + name);
+        user.leaveChannel();
     }
 
     public void banUser(User user) {
-        // aggiungere lista per bannati
+        notify(user.getUsername() + " has been banned");
+        bannedUsers.add(user.getUsername());
         removeUser(user);
     }
 
     public void unbanUser(User user) {
-        // togli da lista bannati
+        if (bannedUsers.contains(user.getUsername())) {
+            bannedUsers.remove(user);
+
+            user.getPrintWriter().println(" you've been unbanned from #" + name);
+        }
     }
 
     public void promote(User user) {
-        // aggiungi a lista admin
+        if( user instanceof User) {
+            Admin ad = new Admin(user.getUsername());
+            Server server = Server.getInstance();
+
+            server.addUserToServer(ad);
+            ad.getPrintWriter().println("Now you'are admin !");
+        }
     }
 
-    public void sendMessage(String message) {
-        ////////////
+    public void sendMessage(User sender, String message) {
+        for(Observer user : users) {
+            if (user != sender) {
+                user.update(message);
+            }
+        }
+    }
+
+    public boolean searchBannedUser (User user) {
+        return bannedUsers.contains(user.getUsername());
     }
 }

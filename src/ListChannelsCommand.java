@@ -1,21 +1,22 @@
+import java.util.Collection;
 import java.util.List;
 
 public class ListChannelsCommand implements Command {
     private Server server;
     private User user;
 
-    public ListChannelsCommand(Server server, User user) {
-        this.server = Server.getInstance();
+    public ListChannelsCommand(User user) {
         this.user = user;
+        this.server = Server.getInstance();
     }
 
     @Override
-    public void execute() { // utilizzare funzione da concretechannel
-        List<Channel> channels = server.getChannels();
+    public void execute() {
+        Collection<Channel> channels = server.getChannels();
         StringBuilder channelList = new StringBuilder("Active channels: ");
         for (Channel channel : channels) {
             channelList.append("#").append(channel.getName()).append(" ");
         }
-        user.sendMessage(channelList.toString());
+        user.getPrintWriter().println(channelList.toString());
     }
 }

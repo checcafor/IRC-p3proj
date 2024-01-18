@@ -1,12 +1,16 @@
 public class KickAction implements AdminActionStrategy {
     private Channel channel;
-    public KickAction(Channel channel) {
-        this.channel = channel;
+    private Admin admin;
+    private User target;
+    public KickAction(Admin admin, String nameTarget) {
+        channel = admin.getCurrentChannel();
+        this.admin = admin;
+        this.target = Server.getInstance().getUserByName(nameTarget);
     }
 
     @Override
-    public void performAction(User admin, User target) {
-        channel.kickUser(target);
-        admin.sendMessage("hai kikkkkkaaatoo"); // da mandare a tutti gli admin
+    public void performAction() {
+        channel.kickUser(target); // esecuzione del comando mediante chiamata a funzione
+        admin.sendMessage("you've kicked " + target.getUsername());
     }
 }

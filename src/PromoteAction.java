@@ -1,12 +1,16 @@
 public class PromoteAction implements AdminActionStrategy {
     private Channel channel;
+    private Admin admin;
+    private User target;
 
-    public PromoteAction(Channel channel) {
-        this.channel = channel;
+    public PromoteAction(Admin admin, String nameTarger) {
+        this.channel = admin.getCurrentChannel();
+        this.admin = admin;
+        this.target = Server.getInstance().getUserByName(nameTarger);
     }
 
     @Override
-    public void performAction(User admin, User target) {
-        channel.promote(target);
+    public void performAction() {
+        channel.promote(target); // esecuzione del comando mediante chiamata a funzione
     }
 }

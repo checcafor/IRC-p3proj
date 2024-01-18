@@ -1,28 +1,32 @@
 public class JoinChannelCommand implements Command {
     private Server server;
     private User user;
+    private String channelName;
     private ConcreteChannel channel;
 
-    public JoinChannelCommand(Server server, User user, ConcreteChannel channel) {
-        this.server = server;
+    public JoinChannelCommand(User user, String channelName) {
+        this.server = Server.getInstance();
         this.user = user;
-        this.channel = channel;
+        this.channelName = channelName;
+        channel = (ConcreteChannel) server.getChannelByName(channelName);
     }
 
     @Override
     public void execute() { // utilizzare funzione da concretechannel
-        String channelName = channel.getName();
-
-        Channel channel = server.getChannels().stream()
-                .filter(c -> c.getName().equalsIgnoreCase(channelName))
-                .findFirst()
-                .orElse(null);
-
-        if (channel != null) {
-            user.joinChannel((ConcreteChannel)channel);
-            user.sendMessage("Joined channel " + channel.getName());
+        if (channel == null) {
+            user.getPrintWriter().println("Insert Valid Channel's Name");
         } else {
-            user.sendMessage("Channel " + channelName + " not found");
+            if (user.getCurrentChannel() != null) {
+                user.leaveChannel();
+            }
+            if (channel.searchBannedUser(user)) {
+                user.getPrintWriter().println("you have been banned from this channel.");
+            } else {
+                channel.notify(user.getUsername() + " has joined to the channel !");
+                channel.addUser(user);
+
+                user.getPrintWriter().println("Welcome to " + channelName + " !! ");
+            }
         }
     }
 }

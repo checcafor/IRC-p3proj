@@ -1,24 +1,36 @@
+import java.io.PrintWriter;
+
 public class PrivateMessageCommand implements Command {
     private Server server;
     private User sender;
-    private String receiverUsername;
+    String[] parts;
     private String message;
 
-    public PrivateMessageCommand(User sender, String receiverUsername, String message) {
+    public PrivateMessageCommand(User sender, String message) {
         this.sender = sender;
-        this.receiverUsername = receiverUsername;
         this.message = message;
         this.server = Server.getInstance();
+        parts = message.split(" ", 2);
     }
 
     @Override
     public void execute() {
-        User receiver = server.getUserByName(receiverUsername);
+        if (parts.length == 2) {
+            String receiverUsername = parts[0]; // nome destinatario
+            String privateMessage = parts[1];   // messaggio
 
-        if (receiver != null) {
-            sender.sendPrivateMessage(receiver, message);
+            User receiver = server.getUserByName(receiverUsername);
+
+            if (receiver != null) {
+                PrintWriter recipientWriter = receiver.getPrintWriter();
+
+                // stampa sul destinatario il messaggio
+                recipientWriter.println("[Private from " + sender + "]: " + privateMessage);
+            } else { // se l'utente non esiste
+                sender.getPrintWriter().println("User " + receiverUsername + " not found.");
+            }
         } else {
-            sender.sendMessage("User " + receiverUsername + " not found");
+            sender.getPrintWriter().println("Invalid /privmsg command. Usage: /privmsg <username> <message>");
         }
     }
 }
