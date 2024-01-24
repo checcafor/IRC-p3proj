@@ -25,7 +25,7 @@ public class PrivateMessageCommand implements Command {
                 PrintWriter recipientWriter = receiver.getPrintWriter();
 
                 // stampa sul destinatario il messaggio
-                recipientWriter.println("[Private from " + sender + "]: " + privateMessage);
+                recipientWriter.println("[Private from " + sender.getUsername() + "]: " + privateMessage);
             } else { // se l'utente non esiste
                 sender.getPrintWriter().println("User " + receiverUsername + " not found.");
             }

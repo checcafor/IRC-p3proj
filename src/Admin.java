@@ -27,7 +27,7 @@ public class Admin extends User {
             setAction(new PromoteAction(this, clientMessage.substring(9)));
             action.performAction();
         } else {
-            this.getPrintWriter().println("Insert Valid Command");
+            super.handleGeneralCommands(clientMessage);
         }
     }
 }

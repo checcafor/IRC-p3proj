@@ -42,23 +42,30 @@ public class ConcreteChannel implements Channel {
         notify(user.getUsername() + " has been banned");
         bannedUsers.add(user.getUsername());
         removeUser(user);
+        user.setCurrentChannel(null);
     }
 
     public void unbanUser(User user) {
         if (bannedUsers.contains(user.getUsername())) {
-            bannedUsers.remove(user);
-
+            bannedUsers.remove(user.getUsername());
             user.getPrintWriter().println(" you've been unbanned from #" + name);
         }
     }
 
-    public void promote(User user) {
-        if( user instanceof User) {
-            Admin ad = new Admin(user.getUsername());
-            Server server = Server.getInstance();
+    public void promote(Admin ad, User user) {
+        Server server = Server.getInstance();
 
-            server.addUserToServer(ad);
-            ad.getPrintWriter().println("Now you'are admin !");
+        if(!server.isAdmin(user.getUsername())) {
+            Admin admin = (Admin) user;
+            server.addUserToServer(admin);
+            server.addAdmin(admin.getUsername());
+            addUser(admin);
+
+            if (admin.getPrintWriter() != null) {
+                admin.getPrintWriter().println("Now you're admin!");
+            }
+        } else {
+            ad.getPrintWriter().println(user.getUsername() + " is already an admin");
         }
     }
 

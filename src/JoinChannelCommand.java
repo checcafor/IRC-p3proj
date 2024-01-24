@@ -12,9 +12,11 @@ public class JoinChannelCommand implements Command {
     }
 
     @Override
-    public void execute() { // utilizzare funzione da concretechannel
+    public void execute() {
         if (channel == null) {
             user.getPrintWriter().println("Insert Valid Channel's Name");
+        } else if (channel == user.getCurrentChannel()) {
+            user.getPrintWriter().println("you're already in this channel");
         } else {
             if (user.getCurrentChannel() != null) {
                 user.leaveChannel();
@@ -24,7 +26,7 @@ public class JoinChannelCommand implements Command {
             } else {
                 channel.notify(user.getUsername() + " has joined to the channel !");
                 channel.addUser(user);
-
+                user.setCurrentChannel(channel);
                 user.getPrintWriter().println("Welcome to " + channelName + " !! ");
             }
         }

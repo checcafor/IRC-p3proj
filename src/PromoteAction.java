@@ -11,6 +11,6 @@ public class PromoteAction implements AdminActionStrategy {
 
     @Override
     public void performAction() {
-        channel.promote(target); // esecuzione del comando mediante chiamata a funzione
+        channel.promote(admin, target); // esecuzione del comando mediante chiamata a funzione
     }
 }

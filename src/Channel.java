@@ -9,6 +9,6 @@ public interface Channel {
     public void kickUser(User user);
     public void banUser(User user);
     public void unbanUser(User user);
-    public void promote(User user);
+    public void promote(Admin ad, User user);
     public void sendMessage(User sender, String message);
 }

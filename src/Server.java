@@ -32,6 +32,10 @@ public class Server {
         channels.put(name, channel);
     }
 
+    public void addAdmin (String name) {
+        administrators.add(name);
+    }
+
     public void addUserToServer (User user) {
         users.put(user.getUsername(), user);
     }
@@ -53,24 +57,6 @@ public class Server {
 
     private static boolean channelExists(String channel) {
         return channels.containsKey(channel);
-    }
-
-    private static void handleGeneralCommands (User user, String clientMessage) {
-        if (clientMessage.startsWith("/join #") && channelExists(clientMessage.substring(7))) {
-            user.joinChannel(clientMessage.substring(7));
-        } else if (clientMessage.equals("/leave")) {
-            user.leaveChannel();
-        } else if (clientMessage.startsWith("/msg ")) {
-            user.sendMessage(clientMessage.substring(5));
-        } else if (clientMessage.equals("/list")) {
-            user.channelList();
-        } else if (clientMessage.equals("/users")) {
-            user.userList();
-        } else if (clientMessage.startsWith("/privmsg ")) {
-            user.sendmexpriv(clientMessage.substring(9));
-        } else {
-            user.getPrintWriter().println("Insert Valid Command");
-        }
     }
 
     public static void main(String[] args) {
@@ -103,7 +89,7 @@ public class Server {
                     users.put(username, user);
                 } else {
                     clientWriter.println("Username already exists. Please choose a different one.");
-                    continue; // torna all'inizio
+                    continue;
                 }
 
                 new Thread(() -> {
@@ -112,12 +98,12 @@ public class Server {
                         User utente = users.get(username);
                         Admin ad;
 
-                        while ((clientMessage = clientReader.readLine()) != null) { // da vedere bene
+                        while ((clientMessage = clientReader.readLine()) != null) {
                             if(getInstance().isAdmin(username)) {
                                 ad = (Admin) utente;
                                 ad.adminAction(clientMessage);
                             } else {
-                                handleGeneralCommands((User) utente, clientMessage);
+                                utente.handleGeneralCommands(clientMessage);
                             }
                         }
                     } catch (IOException e) {

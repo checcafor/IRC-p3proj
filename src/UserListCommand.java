@@ -10,9 +10,17 @@ public class UserListCommand implements Command {
     }
 
     @Override
-    public void execute() { // utilizzare funzione da concretechannel
+    public void execute() {
         if (user.getCurrentChannel() != null) {
-        List<Observer> users = channel.getUsers();
-        user.getPrintWriter().println("nel canale " + channel.getName() + " ci sono i seguenti utenti " + users);
+            List<Observer> users = channel.getUsers();
+            user.getPrintWriter().println("Nel canale " + channel.getName() + " ci sono i seguenti utenti:");
+
+            for (Observer observer : users) {
+                User channelUser = (User) observer;
+                user.getPrintWriter().println("- " + channelUser.getUsername());
+            }
+        } else {
+            user.getPrintWriter().println("non sei in nessun canale !");
+        }
     }
 }
