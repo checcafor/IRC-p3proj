@@ -33,34 +33,22 @@ public class ConcreteChannel implements Channel {
         return users;
     }
 
-    public void kickUser(Admin admin, User user) {
-        if (user.getCurrentChannel() == admin.getCurrentChannel()) {
-            user.getPrintWriter().println(" you've been kicked from #" + name);
-            user.leaveChannel();
-        } else {
-            admin.getPrintWriter().println(user.getUsername() + " isn't in this channel");
-        }
+    public void kickUser(Admin adimin, User user) {
+        user.getPrintWriter().println(" you've been kicked from #" + name);
+        user.leaveChannel();
     }
 
-    public void banUser(Admin admin, User user) {
-        if (bannedUsers.contains(user.getUsername())) {
-            admin.getPrintWriter().println(user.getUsername() + " is already banned");
-        } else if (!users.contains(user)) {
-            admin.getPrintWriter().println(user.getUsername() + " isn't in this channel !");
-        } else {
-            notify(user.getUsername() + " has been banned");
-            bannedUsers.add(user.getUsername());
-            removeUser(user);
-            user.setCurrentChannel(null);
-        }
+    public void banUser(Admin adimin,User user) {
+        notify(user.getUsername() + " has been banned");
+        bannedUsers.add(user.getUsername());
+        removeUser(user);
+        user.setCurrentChannel(null);
     }
 
-    public void unbanUser(Admin admin, User user) {
+    public void unbanUser(Admin adimin,User user) {
         if (bannedUsers.contains(user.getUsername())) {
             bannedUsers.remove(user.getUsername());
             user.getPrintWriter().println(" you've been unbanned from #" + name);
-        } else {
-            admin.getPrintWriter().println(user.getUsername() + " is already unbanned or has never been banned");
         }
     }
 

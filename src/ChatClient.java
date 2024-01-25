@@ -18,23 +18,11 @@ public class ChatClient {
 
             // crea oggetto per leggere da input
             BufferedReader userInputReader = new BufferedReader(new InputStreamReader(System.in));
-            boolean validUsername = false;
+            System.out.print("Enter your username: ");
             // inserisce input letto in variabile username
-            String username = null;
+            String username = userInputReader.readLine();
             // invia nome inserito al socket
-            while (!validUsername) {
-                System.out.print("Enter your username: ");
-                username = userInputReader.readLine();
-                serverWriter.println(username);
-
-                String serverResponse = serverReader.readLine();
-                System.out.println(serverResponse);
-
-                if (!serverResponse.equals("Username already exists. Please choose a different one.")) {
-                    validUsername = true;
-                }
-            }
-
+            serverWriter.println(username);
 
             // creo thread che rimane in attesa di messaggi
             new Thread(() -> {
