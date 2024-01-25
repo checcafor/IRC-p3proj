@@ -10,7 +10,7 @@ public class KickAction implements AdminActionStrategy {
 
     @Override
     public void performAction() {
-        channel.kickUser(target); // esecuzione del comando mediante chiamata a funzione
+        channel.kickUser(admin, target); // esecuzione del comando mediante chiamata a funzione
         admin.sendMessage("you've kicked " + target.getUsername());
     }
 }

@@ -11,6 +11,6 @@ public class UnbanAction implements AdminActionStrategy {
 
     @Override
     public void performAction() {
-        channel.unbanUser(target); // esecuzione del comando mediante chiamata a funzione
+        channel.unbanUser(admin, target); // esecuzione del comando mediante chiamata a funzione
     }
 }
