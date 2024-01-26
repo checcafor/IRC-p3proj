@@ -21,9 +21,13 @@ public class PrivateMessageCommand implements Command {
 
             User receiver = server.getUserByName(receiverUsername);
 
+            if(sender.getUsername().equals(receiverUsername)){
+                sender.getPrintWriter().println("You can't send private massage to yourself.");
+                return;
+            }
+
             if (receiver != null) {
                 PrintWriter recipientWriter = receiver.getPrintWriter();
-
                 // stampa sul destinatario il messaggio
                 recipientWriter.println("[Private from " + sender.getUsername() + "]: " + privateMessage);
             } else { // se l'utente non esiste

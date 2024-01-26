@@ -14,7 +14,7 @@ public class LeaveChannelCommand implements Command {
         } else {
             channel.removeUser(user);
             channel.notify(user.getUsername() + " has leaved the channel !");
-            user.getPrintWriter().println("you leave the channel " + channel.getName() + ", bye bye");
+            user.getPrintWriter().println("you leaved the channel #" + channel.getName() + ", bye bye");
             user.setCurrentChannel(null);
         }
     }

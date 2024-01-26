@@ -49,20 +49,24 @@ public class User implements Observer {
     }
 
     protected void handleGeneralCommands(String clientMessage) {
-        if (clientMessage.startsWith("/join #") /* && channelExists(clientMessage.substring(7))*/) {
-            joinChannel(clientMessage.substring(7));
-        } else if (clientMessage.equals("/leave")) {
-            leaveChannel();
-        } else if (clientMessage.startsWith("/msg ")) {
-            sendMessage(clientMessage.substring(5));
-        } else if (clientMessage.equals("/list")) {
-            channelList();
-        } else if (clientMessage.equals("/users")) {
-            userList();
-        } else if (clientMessage.startsWith("/privmsg ")) {
-            sendmexpriv(clientMessage.substring(9));
+        if(clientMessage.startsWith("/")){
+            if (clientMessage.startsWith("/join #") /* && channelExists(clientMessage.substring(7))*/) {
+                joinChannel(clientMessage.substring(7));
+            } else if (clientMessage.equals("/leave")) {
+                leaveChannel();
+            } else if (clientMessage.startsWith("/msg ")) {
+                sendMessage(clientMessage.substring(5));
+            } else if (clientMessage.equals("/list")) {
+                channelList();
+            } else if (clientMessage.equals("/users")) {
+                userList();
+            } else if (clientMessage.startsWith("/privmsg ")) {
+                sendmexpriv(clientMessage.substring(9));
+            } else {
+                this.getPrintWriter().println("insert a valid command");
+            }
         } else {
-            this.getPrintWriter().println("Insert Valid Command");
+            printWriter.println("insert '/' to start using commands");
         }
     }
 

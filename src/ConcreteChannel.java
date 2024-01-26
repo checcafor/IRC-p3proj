@@ -41,7 +41,7 @@ public class ConcreteChannel implements Channel {
         if (users.contains(user)) {
             user.getPrintWriter().println("you've been kicked from #" + name);
             user.leaveChannel();
-            admin.getPrintWriter().println("you've kicked " + user.getUsername());
+            //admin.getPrintWriter().println("you've kicked " + user.getUsername());
         } else {
             admin.getPrintWriter().println(user.getUsername() + " isn't in this channel");
         }

@@ -82,38 +82,46 @@ public class Server {
                 // per inviare output al client
                 PrintWriter clientWriter = new PrintWriter(clientSocket.getOutputStream(), true);
 
-                String username = clientReader.readLine();
-                User user = null;
-                if (!users.containsKey(username)) {
-                    if (administrators.contains(username)) {
-                        user = new Admin(username);
-                    } else {
-                        user = new User(username);
+                String username = "";
+                boolean userAlreadyExist = false;
+
+                while (!userAlreadyExist) {
+                    username = clientReader.readLine().trim();
+                    userAlreadyExist = !users.containsKey(username);
+
+                    if (!userAlreadyExist) {
+                        clientWriter.println("Username is already taken. Please choose a different username.");
+                        clientWriter.println("Enter your username:");
                     }
-
-                    user.setPrintWriter(clientWriter);
-                    users.put(username, user);
-                    user.getPrintWriter().println("Hi " + user.getUsername() + "! Welocme in the server");
-
-                    LocalTime currentTime = LocalTime.now();
-                    // Definire un formato personalizzato
-                    System.out.println("[LOG ~ "+ currentTime.format(DateTimeFormatter.ofPattern("HH:mm:ss")) + "]: " + user.getUsername() + " has joined the server" );
-                    // questa va messa nel db e in teoria anche stampata su server (quindi magari prima messa sul db, e poi dal db stampata sul server)
-
-                } else {
-                    clientWriter.println("Username already exists. Please choose a different one.");
-                    continue;
                 }
+
+                User user = null;
+                if (administrators.contains(username)) {
+                    user = new Admin(username);
+                } else {
+                    user = new User(username);
+                }
+
+                user.setPrintWriter(clientWriter);
+                users.put(username, user);
+                user.getPrintWriter().println("Hi " + user.getUsername() + "! Welcome in the server");
+
+                LocalTime currentTime = LocalTime.now(); // viene ricavato l'orario del messaggio di log
+                System.out.println("[LOG ~ "+ currentTime.format(DateTimeFormatter.ofPattern("HH:mm:ss")) + "]: " + user.getUsername() + " has joined the server" );
+
+                // questa va messa nel db e in teoria anche stampata su server (quindi magari prima messa sul db, e poi dal db stampata sul server)
+
+                String _username = username;
 
                 new Thread(() -> {
                     try {
                         String clientMessage;
-                        User utente = users.get(username);
+                        User utente = users.get(_username);
                         Admin ad = new Admin(utente);
                         //Admin ad = (Admin) users.get(username);
 
                         while ((clientMessage = clientReader.readLine()) != null) {
-                            if(getInstance().isAdmin(username)) {
+                            if(getInstance().isAdmin(_username)) {
                                 ad.adminAction(clientMessage);
                             } else {
                                 utente.handleGeneralCommands(clientMessage);
@@ -122,7 +130,7 @@ public class Server {
                     } catch (IOException e) {
                         e.printStackTrace();
                     } finally {
-                        users.remove(username);
+                        users.remove(_username);
                     }
                 }).start();
             }

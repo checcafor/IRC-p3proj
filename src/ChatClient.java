@@ -36,31 +36,12 @@ public class ChatClient {
                 }
             }).start(); // esegue in thread, lo fa partire
 
-            new Thread(() -> {
-                try {
-                    String userInput;
-                    while ((userInput = userInputReader.readLine()) != null) {
-                        if(userInput.startsWith("/")) {
-                            serverWriter.println(userInput);
-                        } else {
-                            System.out.println("insert command");
-                        }
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }).start();
 
-            new Thread(() -> {
-                try {
-                    String serverMessage;
-                    while ((serverMessage = serverReader.readLine()) != null) {
-                        System.out.println(serverMessage);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }).start();
+            String userInput;
+            while ((userInput = userInputReader.readLine()) != null) {
+                serverWriter.println(userInput);
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
