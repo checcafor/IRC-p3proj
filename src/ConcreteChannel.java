@@ -33,51 +33,73 @@ public class ConcreteChannel implements Channel {
         return users;
     }
 
-    public void kickUser(Admin adimin, User user) {
+    public void kickUser(Admin admin, User user) {
+        if(user == null){   // se l'oggetto dell'utente cercato è null allora esso non esiste
+            admin.getPrintWriter().println("user not found ! ");
+            return;
+        }
         if (users.contains(user)) {
-            user.getPrintWriter().println(" you've been kicked from #" + name);
+            user.getPrintWriter().println("you've been kicked from #" + name);
             user.leaveChannel();
+            admin.getPrintWriter().println("you've kicked " + user.getUsername());
         } else {
-            adimin.getPrintWriter().println(user.getUsername() + " isn't in this channel");
+            admin.getPrintWriter().println(user.getUsername() + " isn't in this channel");
         }
     }
 
-    public void banUser(Admin adimin,User user) {
+    public void banUser(Admin admin,User user) {
+        if(user == null){   // se l'oggetto dell'utente cercato è null allora esso non esiste
+            admin.getPrintWriter().println("user not found ! ");
+            return;
+        }
         if (bannedUsers.contains(user.getUsername())) {
-            adimin.getPrintWriter().println(user.getUsername() + " is already banned");
+            admin.getPrintWriter().println(user.getUsername() + " is already banned");
         } else if (!users.contains(user)) {
-            adimin.getPrintWriter().println(user.getUsername() + " isn't in this channel");
+            admin.getPrintWriter().println(user.getUsername() + " isn't in this channel");
         } else {
             notify(user.getUsername() + " has been banned");
             bannedUsers.add(user.getUsername());
             user.leaveChannel();
             user.setCurrentChannel(null);
+            //admin.getPrintWriter().println("You've banned " + user.getUsername());
         }
     }
 
-    public void unbanUser(Admin adimin,User user) {
+    public void unbanUser(Admin admin,User user) {
+        if(user == null){   // se l'oggetto dell'utente cercato è null allora esso non esiste
+            admin.getPrintWriter().println("user not found ! ");
+            return;
+        }
         if (bannedUsers.contains(user.getUsername())) {
             bannedUsers.remove(user.getUsername());
-            user.getPrintWriter().println(" you've been unbanned from #" + name);
+            user.getPrintWriter().println("you've been unbanned from #" + name);
         } else {
-            adimin.getPrintWriter().println(user.getUsername() + " is already unbanned or has never been banned");
+            admin.getPrintWriter().println(user.getUsername() + " is already unbanned or has never been banned");
         }
     }
 
-    public void promote(Admin ad, User user) {
+    public void promote(Admin admin, User user) {
+        if(user == null){   // se l'oggetto dell'utente cercato è null allora esso non esiste
+            admin.getPrintWriter().println("user not found ! ");
+            return;
+        }
+
         Server server = Server.getInstance();
 
         if(!server.isAdmin(user.getUsername())) {
-            Admin admin = (Admin) user;
-            server.addUserToServer(admin);
-            server.addAdmin(admin.getUsername());
-            addUser(admin);
 
-            if (admin.getPrintWriter() != null) {
-                admin.getPrintWriter().println("Now you're admin!");
+            Admin new_admin = new Admin(user);          // viene creato un'oggetto admin, copia di quello utente ma con privilegi da admin
+            removeUser(user);                           // viene rimosso l'utente (base) dalla lista presente nel canale
+            server.removeUserToServer(user);            // viene rimosso l'utente (base) dalla lista di utenti connessi al server
+            server.addUserToServer(new_admin);          // viene aggiunto l'utente (che ora figura come admin) alla lista degli utenti connessi al server
+            server.addAdmin(new_admin.getUsername());   // viene aggiunto il nome delll'utente (che ora figura come admin) alla lista degli admin del server
+            addUser(new_admin);                         // viene aggiunto l'utente (che ora figura come admin) alla lista degli utenti connessi al canale
+
+            if (new_admin.getPrintWriter() != null) {
+                new_admin.getPrintWriter().println("Now you're admin of the server!");
             }
         } else {
-            ad.getPrintWriter().println(user.getUsername() + " is already an admin");
+            admin.getPrintWriter().println(user.getUsername() + " is already an admin");
         }
     }
 

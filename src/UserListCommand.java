@@ -11,16 +11,17 @@ public class UserListCommand implements Command {
 
     @Override
     public void execute() {
-        if (user.getCurrentChannel() != null) {
+
+        if (channel != null) {
             List<Observer> users = channel.getUsers();
-            user.getPrintWriter().println("Nel canale " + channel.getName() + " ci sono i seguenti utenti:");
+            user.getPrintWriter().println("In #" + channel.getName() + " there are these users:");
 
             for (Observer observer : users) {
                 User channelUser = (User) observer;
                 user.getPrintWriter().println("- " + channelUser.getUsername());
             }
         } else {
-            user.getPrintWriter().println("non sei in nessun canale !");
+            user.getPrintWriter().println("you're not in a channel !");
         }
     }
 }

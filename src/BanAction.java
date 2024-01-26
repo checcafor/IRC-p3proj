@@ -11,7 +11,11 @@ public class BanAction implements AdminActionStrategy {
 
     @Override
     public void performAction() {
-        channel.banUser(admin, target); // esecuzione del comando mediante chiamata a funzione
-        admin.getPrintWriter().println("You've banned " + target.getUsername());
+        if(target != null){
+            channel.banUser(admin, target); // esecuzione del comando mediante chiamata a funzione
+        }
+        else {
+            admin.getPrintWriter().println("user not found !");
+        }
     }
 }

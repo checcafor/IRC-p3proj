@@ -5,6 +5,8 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 public class Server {
     private static Server instance; // istanza del server ( che sarà univoca grazie a singleton )
@@ -39,6 +41,9 @@ public class Server {
     public void addUserToServer (User user) {
         users.put(user.getUsername(), user);
     }
+    public void removeUserToServer(User user){
+        users.remove(user.getUsername(), user);
+    }
 
     public Channel getChannelByName (String name) {
         return channels.get(name);
@@ -63,6 +68,7 @@ public class Server {
         Server server = Server.getInstance();
 
         server.addChannel("general");
+        server.addChannel("default");
         administrators.add("kekka");
 
         try {
@@ -87,6 +93,13 @@ public class Server {
 
                     user.setPrintWriter(clientWriter);
                     users.put(username, user);
+                    user.getPrintWriter().println("Hi " + user.getUsername() + "! Welocme in the server");
+
+                    LocalTime currentTime = LocalTime.now();
+                    // Definire un formato personalizzato
+                    System.out.println("[LOG ~ "+ currentTime.format(DateTimeFormatter.ofPattern("HH:mm:ss")) + "]: " + user.getUsername() + " has joined the server" );
+                    // questa va messa nel db e in teoria anche stampata su server (quindi magari prima messa sul db, e poi dal db stampata sul server)
+
                 } else {
                     clientWriter.println("Username already exists. Please choose a different one.");
                     continue;
@@ -96,11 +109,11 @@ public class Server {
                     try {
                         String clientMessage;
                         User utente = users.get(username);
-                        Admin ad;
+                        Admin ad = new Admin(utente);
+                        //Admin ad = (Admin) users.get(username);
 
                         while ((clientMessage = clientReader.readLine()) != null) {
                             if(getInstance().isAdmin(username)) {
-                                ad = (Admin) utente;
                                 ad.adminAction(clientMessage);
                             } else {
                                 utente.handleGeneralCommands(clientMessage);

@@ -16,6 +16,13 @@ public class User implements Observer {
         invoker = new BaseCommandHandler();
     }
 
+    public User(User user){
+        this.username = user.getUsername();
+        this.currentChannel = user.getCurrentChannel();
+        this.printWriter = user.getPrintWriter();
+        this.invoker = user.getInvoker();
+    }
+
     public String getUsername () {
         return username;
     }
@@ -36,6 +43,7 @@ public class User implements Observer {
         return printWriter;
     }
 
+    public BaseCommandHandler getInvoker(){return invoker;}
     public void setCurrentChannel(ConcreteChannel currentChannel) {
         this.currentChannel = currentChannel;
     }
@@ -59,36 +67,42 @@ public class User implements Observer {
     }
 
     public void joinChannel (String channel) {
-        JoinChannelCommand join = new JoinChannelCommand(this, channel); // crea un'istanza del comando join
+        User user = Server.getInstance().getUserByName(this.getUsername()); // viene recuperato l'utente / admin che vuole eseguire il comando
+        JoinChannelCommand join = new JoinChannelCommand(user, channel);    // crea un'istanza del comando join
         invoker.setCommand(join); // imposta il comando di join come comando da eseguire
         invoker.handleCommand();  // esegue il comando join
     }
 
     public void leaveChannel () {
-        LeaveChannelCommand leave = new LeaveChannelCommand(this); // crea un'istanza del comando leave
+        User user = Server.getInstance().getUserByName(this.getUsername()); // viene recuperato l'utente / admin che vuole eseguire il comando
+        LeaveChannelCommand leave = new LeaveChannelCommand(user); // crea un'istanza del comando leave
         invoker.setCommand(leave); // imposta il comando di leave come comando da eseguire
         invoker.handleCommand();  // esegue il comando leave
     }
 
     public void sendMessage (String message) {
-        SendMexCommand sendmex = new SendMexCommand(this, message); // crea un'istanza del comando msg
+        User user = Server.getInstance().getUserByName(this.getUsername()); // viene recuperato l'utente / admin che vuole eseguire il comando
+        SendMexCommand sendmex = new SendMexCommand(user, message); // crea un'istanza del comando msg
         invoker.setCommand(sendmex); // imposta il comando di msg come comando da eseguire
         invoker.handleCommand();     // esegue il comando msg
     }
 
     public void userList () {
-        UserListCommand userl = new UserListCommand(this); // crea un'istanza del comando users
+        User user = Server.getInstance().getUserByName(this.getUsername()); // viene recuperato l'utente / admin che vuole eseguire il comando
+        UserListCommand userl = new UserListCommand(user); // crea un'istanza del comando users
         invoker.setCommand(userl); // imposta il comando di users come comando da eseguire
         invoker.handleCommand();   // esegue il comando users
     }
 
     public void channelList () {
-        ListChannelsCommand list = new ListChannelsCommand(this); // crea un'istanza del comando list
+        User user = Server.getInstance().getUserByName(this.getUsername()); // viene recuperato l'utente / admin che vuole eseguire il comando
+        ListChannelsCommand list = new ListChannelsCommand(user); // crea un'istanza del comando list
         invoker.setCommand(list); // imposta il comando di list come comando da eseguire
         invoker.handleCommand();  // esegue il comando list
     }
     public void sendmexpriv (String message) {
-        PrivateMessageCommand privmex = new PrivateMessageCommand(this, message); // crea un'istanza del comando privmsg
+        User user = Server.getInstance().getUserByName(this.getUsername()); // viene recuperato l'utente / admin che vuole eseguire il comando
+        PrivateMessageCommand privmex = new PrivateMessageCommand(user, message); // crea un'istanza del comando privmsg
         invoker.setCommand(privmex); // imposta il comando di privmsg come comando da eseguire
         invoker.handleCommand();     // esegue il comando privmsg
     }
