@@ -5,8 +5,6 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 
 public class Server {
     private static Server instance; // istanza del server ( che sarà univoca grazie a singleton )
@@ -106,10 +104,11 @@ public class Server {
                 users.put(username, user);
                 user.getPrintWriter().println("Hi " + user.getUsername() + "! Welcome in the server");
 
-                LocalTime currentTime = LocalTime.now(); // viene ricavato l'orario del messaggio di log
-                System.out.println("[LOG ~ "+ currentTime.format(DateTimeFormatter.ofPattern("HH:mm:ss")) + "]: " + user.getUsername() + " has joined the server" );
+                String logMessage = user.getUsername() + " has joined the server";
+                DataToDatabase logToDatabase = new DataToDatabase(logMessage);
 
-                // questa va messa nel db e in teoria anche stampata su server (quindi magari prima messa sul db, e poi dal db stampata sul server)
+                RetrieveDataFromDatabase retriever = new RetrieveDataFromDatabase(logMessage);
+                System.out.println(retriever.getRetrievedDate() + " " + logMessage);
 
                 String _username = username;
 
