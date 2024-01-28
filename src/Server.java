@@ -108,7 +108,7 @@ public class Server {
                 DataToDatabase logToDatabase = new DataToDatabase(logMessage);
 
                 RetrieveDataFromDatabase retriever = new RetrieveDataFromDatabase(logMessage);
-                System.out.println(retriever.getRetrievedDate() + " " + logMessage);
+                System.out.println("[LOG ~ " + retriever.getRetrievedDate() + "]: " + logMessage);
 
                 String _username = username;
 
@@ -129,7 +129,18 @@ public class Server {
                     } catch (IOException e) {
                         e.printStackTrace();
                     } finally {
+                        User quittingUser = server.getUserByName(_username);
+
+                        if(quittingUser.getCurrentChannel() != null){
+                            quittingUser.leaveChannel();
+                        }
                         users.remove(_username);
+
+                        String logoutMessage = _username + " has leaved the server";
+                        DataToDatabase logoutToDatabase = new DataToDatabase(logoutMessage);
+
+                        RetrieveDataFromDatabase retrieverLogout = new RetrieveDataFromDatabase(logoutMessage);
+                        System.out.println("[LOG ~ " + retrieverLogout.getRetrievedDate() + "]: " + logoutMessage);
                     }
                 }).start();
             }
