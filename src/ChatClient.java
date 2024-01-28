@@ -5,6 +5,11 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 public class ChatClient {
+    private static IRCChatApp ircChatApp;
+
+    public ChatClient(IRCChatApp ircChatApp) {
+        this.ircChatApp = ircChatApp;
+    }
     public static void main(String[] args) {
         try {
             Socket socket = new Socket("localhost", 12347);
@@ -30,6 +35,7 @@ public class ChatClient {
                     String serverMessage; // variabile che conterrà il messaggio in arrivo
                     while ((serverMessage = serverReader.readLine()) != null) { // attente mex
                         System.out.println(serverMessage); // quando lo riceve lo stampa
+                        ircChatApp.visualizzaMessaggio(serverMessage);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();

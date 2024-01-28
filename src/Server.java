@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -81,17 +82,20 @@ public class Server {
                 PrintWriter clientWriter = new PrintWriter(clientSocket.getOutputStream(), true);
 
                 String username = "";
-                boolean userAlreadyExist = false;
+                boolean userAlreadyExist;
 
-                while (!userAlreadyExist) {
+                do {
                     username = clientReader.readLine().trim();
-                    userAlreadyExist = !users.containsKey(username);
+                    userAlreadyExist = users.containsKey(username);
 
-                    if (!userAlreadyExist) {
-                        clientWriter.println("Username is already taken. Please choose a different username.");
-                        clientWriter.println("Enter your username:");
+                    if (userAlreadyExist) {
+                        // Send a message to the client indicating that the username is already taken
+                        clientWriter.println("Username is already taken. Please choose a different username:");
+                    } else {
+                        // Send a message to the client indicating that the username is accepted
+                        clientWriter.println("OK");
                     }
-                }
+                } while (userAlreadyExist);
 
                 User user = null;
                 if (administrators.contains(username)) {
