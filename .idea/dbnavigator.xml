@@ -4,6 +4,11 @@
     <mappings />
     <preferences />
   </component>
+  <component name="DBNavigator.Project.DataEditorManager">
+    <record-view-column-sorting-type value="BY_INDEX" />
+    <value-preview-text-wrapping value="true" />
+    <value-preview-pinned value="false" />
+  </component>
   <component name="DBNavigator.Project.DatabaseBrowserManager">
     <autoscroll-to-editor value="false" />
     <autoscroll-from-editor value="true" />
@@ -20,6 +25,9 @@
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">
     <open-files />
+  </component>
+  <component name="DBNavigator.Project.DatabaseSessionManager">
+    <connection id="19b73cf2-4153-452f-b95f-0017847387fb" />
   </component>
   <component name="DBNavigator.Project.DatasetFilterManager">
     <filter-actions connection-id="19b73cf2-4153-452f-b95f-0017847387fb" dataset="logdb.connections" active-filter-id="" />
@@ -265,6 +273,7 @@
           <content-type name="Groovy" enabled="true" />
           <content-type name="FTL" enabled="true" />
           <content-type name="VTL" enabled="true" />
+          <content-type name="AIDL" enabled="true" />
           <content-type name="YAML" enabled="true" />
           <content-type name="Manifest" enabled="true" />
         </content-types>
@@ -527,5 +536,9 @@
         </visibility-settings>
       </environment>
     </general-settings>
+  </component>
+  <component name="DBNavigator.Project.StatementExecutionManager">
+    <execution-variables />
+    <execution-variable-types />
   </component>
 </project>
