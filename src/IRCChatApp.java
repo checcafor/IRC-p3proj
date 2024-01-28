@@ -10,7 +10,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 public class IRCChatApp extends JFrame {
     private JTextArea chatArea; // messaggi della chat
@@ -18,6 +18,7 @@ public class IRCChatApp extends JFrame {
     private Socket clientSocket;
     private PrintWriter serverWriter;
     private BufferedReader serverReader;
+    private final Server server = Server.getInstance();
 
     public IRCChatApp() {
         avviaPaginaLogin();
@@ -38,51 +39,48 @@ public class IRCChatApp extends JFrame {
         JButton loginButton = new JButton("Login");
         ChatClient chatClient = new ChatClient(this);
 
-        loginButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String nomeUtente = campoNome.getText(); // prende nome inserito nel campo per input
-                if (!nomeUtente.isEmpty()) { // se la variabile non è vuota
-                    try {
-                        clientSocket = new Socket("localhost", 12347);
-                        serverWriter = new PrintWriter(clientSocket.getOutputStream(), true);
-                        serverReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-                        serverWriter.println(nomeUtente);
+        loginButton.addActionListener(e -> {
+            String nomeUtente = campoNome.getText(); // prende nome inserito nel campo per input
+            if (!nomeUtente.isEmpty()) { // se la variabile non è vuota
+                try {
+                    clientSocket = new Socket("localhost", 12347);
+                    serverWriter = new PrintWriter(clientSocket.getOutputStream(), true);
+                    serverReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                    serverWriter.println(nomeUtente);
 
-                        // check if the server approves the username
-                        String response = serverReader.readLine();
+                    // check if the server approves the username
+                    String response = serverReader.readLine();
 
-                        if (!response.equals("OK")) {
-                            while (!response.equals("OK")) {
-                                // Display a message to the user that the username is not unique
-                                JOptionPane.showMessageDialog(frameLogin, "Username is already taken. Please choose a different username:");
+                    if (!response.equals("OK")) {
+                        while (!response.equals("OK")) {
+                            // Display a message to the user that the username is not unique
+                            JOptionPane.showMessageDialog(frameLogin, "Username is already taken. Please choose a different username:");
 
-                                nomeUtente = JOptionPane.showInputDialog(frameLogin, "Enter a different username:");
-                                // Clear the input field on the client side
-                                // Send the new username to the server
-                                serverWriter.println(nomeUtente);
+                            nomeUtente = JOptionPane.showInputDialog(frameLogin, "Enter a different username:");
+                            // Clear the input field on the client side
+                            // Send the new username to the server
+                            serverWriter.println(nomeUtente);
 
-                                // Read the response from the server
-                                response = serverReader.readLine();
-                            }
+                            // Read the response from the server
+                            response = serverReader.readLine();
                         }
-
-                        frameLogin.dispose(); // close the login page
-                        inizializzaApp(nomeUtente); // open the main chat window
-
-                        new Thread(() -> {
-                            try {
-                                String serverMessage;
-                                while ((serverMessage = serverReader.readLine()) != null) {
-                                    chatArea.append(serverMessage + "\n");
-                                }
-                            } catch (IOException ex) {
-                                ex.printStackTrace();
-                            }
-                        }).start();
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
                     }
+
+                    frameLogin.dispose(); // close the login page
+                    inizializzaApp(nomeUtente); // open the main chat window
+
+                    new Thread(() -> {
+                        try {
+                            String serverMessage;
+                            while ((serverMessage = serverReader.readLine()) != null) {
+                                chatArea.append(serverMessage + "\n");
+                            }
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
+                    }).start();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
                 }
             }
         });
@@ -108,11 +106,9 @@ public class IRCChatApp extends JFrame {
         inputField = new JTextField(); // input per invio messaggi
         JButton sendButton = new JButton("Invia"); // tasto per inviare messaggi
 
-        sendButton.addActionListener(new ActionListener() { // ascoltatore sul tasto
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                inviaMessaggio(nomeUtente); // richiama funzione invio messaggio al server
-            }
+        // ascoltatore sul tasto
+        sendButton.addActionListener(e -> {
+            inviaMessaggio(); // richiama funzione invio messaggio al server
         });
 
         inputField.addKeyListener(new KeyListener() {
@@ -123,9 +119,13 @@ public class IRCChatApp extends JFrame {
 
             @Override
             public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    // Se il tasto premuto è "Invio", invia il messaggio
+                    inviaMessaggio();
+                }
                 if (e.getKeyChar() == '/') {
                     // Mostra l'elenco dei comandi come un menu popup
-                    EventQueue.invokeLater(() -> mostraMenuComandi());
+                    EventQueue.invokeLater(() -> mostraMenuComandi(nomeUtente));
                 }
             }
 
@@ -148,9 +148,8 @@ public class IRCChatApp extends JFrame {
         setVisible(true);
     }
 
-    private void inviaMessaggio(String nomeUtente) {
+    private void inviaMessaggio() {
         String messaggio = inputField.getText();
-        User user = Server.getInstance().getUserByName(nomeUtente);
 
         if (!messaggio.isEmpty()) {
             serverWriter.println(messaggio);
@@ -158,21 +157,24 @@ public class IRCChatApp extends JFrame {
         }
     }
 
-    private void mostraMenuComandi() {
+    private void mostraMenuComandi(String username) {
         JPopupMenu menuComandi = new JPopupMenu();
-        String[] comandi = { "/help", "/nick", "/join", "/quit" }; // Esempio di elenco di comandi
+        ArrayList<String> comandi = new ArrayList<>(Arrays.asList("/join #", "/list", "/users", "/leave", "/msg", "/privmsg"));
+
+        if (server.getAdministrators().contains(username)) {
+            comandi.add("/ban");
+            comandi.add("/unban");
+            comandi.add("/kick");
+            comandi.add("/promote");
+        }
 
         for (String comando : comandi) {
             JMenuItem menuItem = new JMenuItem(comando);
-            menuItem.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    // Azione da eseguire quando un comando viene selezionato
-                    String comandoSelezionato = ((JMenuItem) e.getSource()).getText();
-                    // Esempio: Aggiungi il comando all'inputField
-                    inputField.setText(comandoSelezionato);
-                    inputField.requestFocus();
-                }
+            menuItem.addActionListener(e -> {
+                // Azione da eseguire quando un comando viene selezionato
+                String comandoSelezionato = ((JMenuItem) e.getSource()).getText();
+                inputField.setText(comandoSelezionato);
+                inputField.requestFocus();
             });
             menuComandi.add(menuItem);
         }
@@ -191,11 +193,6 @@ public class IRCChatApp extends JFrame {
 
     public static void main(String[] args) {
         // viene utilizzato per garantire che la creazione dell'interfaccia grafica Swing avvenga nel thread di interfaccia utente
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new IRCChatApp();
-            }
-        });
+        SwingUtilities.invokeLater(IRCChatApp::new);
     }
 }

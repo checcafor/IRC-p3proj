@@ -18,7 +18,7 @@ public class SendMexCommand  implements Command {
         if (channel != null) {
             userlist = channel.getUsers();
 
-            channel.sendMessage(user, "[ ~ " + user.getUsername() + "] : " +  message);
+            channel.sendMessage(user, message);
         }
     }
 }

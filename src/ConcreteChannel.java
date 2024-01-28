@@ -106,7 +106,9 @@ public class ConcreteChannel implements Channel {
     public void sendMessage(User sender, String message) {
         for(Observer user : users) {
             if (user != sender) {
-                user.update(message);
+                user.update("[ ~ " + sender.getUsername() + "] : " +  message);
+            } else {
+                sender.getPrintWriter().println("[ ~ me ] : " +  message);
             }
         }
     }

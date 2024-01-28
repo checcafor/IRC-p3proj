@@ -27,6 +27,10 @@ public class Server {
         return instance;
     }
 
+    public Set<String> getAdministrators() {
+        return administrators;
+    }
+
     public void addChannel (String name) { // metodo per aggiungere canali
         ChannelFactory factory = new ChannelFactory();
         ConcreteChannel channel = factory.createChannel(name);
@@ -59,16 +63,12 @@ public class Server {
         return administrators.contains(username);
     }
 
-    private static boolean channelExists(String channel) {
-        return channels.containsKey(channel);
-    }
-
     public static void main(String[] args) {
         Server server = Server.getInstance();
 
         server.addChannel("general");
         server.addChannel("default");
-        administrators.add("kekka");
+        server.addAdmin("kekka");
 
         try {
             ServerSocket serverSocket = new ServerSocket(12347);
@@ -81,7 +81,7 @@ public class Server {
                 // per inviare output al client
                 PrintWriter clientWriter = new PrintWriter(clientSocket.getOutputStream(), true);
 
-                String username = "";
+                String username;
                 boolean userAlreadyExist;
 
                 do {
@@ -97,7 +97,7 @@ public class Server {
                     }
                 } while (userAlreadyExist);
 
-                User user = null;
+                User user;
                 if (administrators.contains(username)) {
                     user = new Admin(username);
                 } else {
