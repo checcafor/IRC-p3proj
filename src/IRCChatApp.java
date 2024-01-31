@@ -53,15 +53,15 @@ public class IRCChatApp extends JFrame {
 
                     if (!response.equals("OK")) {
                         while (!response.equals("OK")) {
-                            // Display a message to the user that the username is not unique
+                            // display a message to the user that the username is not unique
                             JOptionPane.showMessageDialog(frameLogin, "Username is already taken. Please choose a different username:");
 
                             nomeUtente = JOptionPane.showInputDialog(frameLogin, "Enter a different username:");
-                            // Clear the input field on the client side
-                            // Send the new username to the server
+                            // clear the input field on the client side
+                            // send the new username to the server
                             serverWriter.println(nomeUtente);
 
-                            // Read the response from the server
+                            // read the response from the server
                             response = serverReader.readLine();
                         }
                     }
@@ -114,24 +114,24 @@ public class IRCChatApp extends JFrame {
         inputField.addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
-                // Ignora gli eventi keyTyped
+                // ignora gli eventi keyTyped
             }
 
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    // Se il tasto premuto è "Invio", invia il messaggio
+                    // se il tasto premuto è "Invio", invia il messaggio
                     inviaMessaggio();
                 }
                 if (e.getKeyChar() == '/') {
-                    // Mostra l'elenco dei comandi come un menu popup
+                    // mostra l'elenco dei comandi come un menu popup
                     EventQueue.invokeLater(() -> mostraMenuComandi(nomeUtente));
                 }
             }
 
             @Override
             public void keyReleased(KeyEvent e) {
-                // Ignora gli eventi keyReleased
+                // ignora gli eventi keyReleased
             }
         });
 
@@ -161,7 +161,10 @@ public class IRCChatApp extends JFrame {
         JPopupMenu menuComandi = new JPopupMenu();
         ArrayList<String> comandi = new ArrayList<>(Arrays.asList("/join #", "/list", "/users", "/leave", "/msg", "/privmsg"));
 
-        if (server.getAdministrators().contains(username)) {
+        System.out.println(username);
+        System.out.println(server.getAdministrators());
+
+        if (server.isAdmin(username)) {
             comandi.add("/ban");
             comandi.add("/unban");
             comandi.add("/kick");
@@ -171,7 +174,7 @@ public class IRCChatApp extends JFrame {
         for (String comando : comandi) {
             JMenuItem menuItem = new JMenuItem(comando);
             menuItem.addActionListener(e -> {
-                // Azione da eseguire quando un comando viene selezionato
+                // azione da eseguire quando un comando viene selezionato
                 String comandoSelezionato = ((JMenuItem) e.getSource()).getText();
                 inputField.setText(comandoSelezionato);
                 inputField.requestFocus();
@@ -179,7 +182,7 @@ public class IRCChatApp extends JFrame {
             menuComandi.add(menuItem);
         }
 
-        // Imposta la larghezza del popup in base alla larghezza dell'inputField
+        // imposta la larghezza del popup in base alla larghezza dell'inputField
         int popupWidth = inputField.getWidth() - 10; // Regolazione della larghezza del popup
         menuComandi.setPreferredSize(new Dimension(popupWidth, menuComandi.getPreferredSize().height));
 

@@ -10,6 +10,9 @@ public class ChatClient {
     public ChatClient(IRCChatApp ircChatApp) {
         this.ircChatApp = ircChatApp;
     }
+    public ChatClient() {       // costruttore di default per lo starting tramite terminale
+        this.ircChatApp = null;
+    }
     public static void main(String[] args) {
         try {
             Socket socket = new Socket("localhost", 12347);
@@ -34,8 +37,10 @@ public class ChatClient {
                 try { // attesa
                     String serverMessage; // variabile che conterrà il messaggio in arrivo
                     while ((serverMessage = serverReader.readLine()) != null) { // attente mex
-                        System.out.println(serverMessage); // quando lo riceve lo stampa
-                        ircChatApp.visualizzaMessaggio(serverMessage);
+                        System.out.println(serverMessage);  // quando lo riceve lo stampa
+                        if(ircChatApp != null){             // se l'interfaccia non è stata inizializzata non visualizza il messaggio sulla UI
+                            ircChatApp.visualizzaMessaggio(serverMessage);
+                        }
                     }
                 } catch (IOException e) {
                     e.printStackTrace();

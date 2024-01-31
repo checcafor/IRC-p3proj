@@ -9,9 +9,9 @@ import java.util.*;
 
 public class Server {
     private static Server instance; // istanza del server ( che sarà univoca grazie a singleton )
-    private static Map<String, Channel> channels; // lista canali
-    private static Map<String, User> users; // map utenti presenti nel server ( username , oggetto di tipo User o admin grazie al polimorfismo )
-    private static Set<String> administrators; // map contenente gli username degli amministratori presenti nel server
+    private Map<String, Channel> channels; // lista canali
+    private Map<String, User> users; // map utenti presenti nel server ( username , oggetto di tipo User o admin grazie al polimorfismo )
+    private Set<String> administrators; // map contenente gli username degli amministratori presenti nel server
 
     private Server () {
         channels = new HashMap<>(); // instanziare un array contenente tutti i canali disponibili nel server
@@ -33,7 +33,7 @@ public class Server {
 
     public void addChannel (String name) { // metodo per aggiungere canali
         ChannelFactory factory = new ChannelFactory();
-        ConcreteChannel channel = factory.createChannel(name);
+        ConcreteChannel channel = (ConcreteChannel) factory.createChannel(name);
         channels.put(name, channel);
     }
 
@@ -53,6 +53,10 @@ public class Server {
     }
     public Collection<Channel> getChannels () {
         return channels.values();
+    }
+
+    public Map<String, User> getUsers(){
+        return users;
     }
 
     public User getUserByName (String username) {
@@ -80,6 +84,9 @@ public class Server {
                 BufferedReader clientReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                 // per inviare output al client
                 PrintWriter clientWriter = new PrintWriter(clientSocket.getOutputStream(), true);
+
+                Map<String, User> users = server.getUsers();
+                Set<String> administrators = server.getAdministrators();
 
                 String username;
                 boolean userAlreadyExist;
