@@ -32,6 +32,9 @@
   <component name="DBNavigator.Project.DatasetFilterManager">
     <filter-actions connection-id="19b73cf2-4153-452f-b95f-0017847387fb" dataset="logdb.connections" active-filter-id="" />
   </component>
+  <component name="DBNavigator.Project.ExecutionManager">
+    <retain-sticky-names value="false" />
+  </component>
   <component name="DBNavigator.Project.ObjectQuickFilterManager">
     <last-used-operator value="EQUAL" />
     <filters />
@@ -273,7 +276,6 @@
           <content-type name="Groovy" enabled="true" />
           <content-type name="FTL" enabled="true" />
           <content-type name="VTL" enabled="true" />
-          <content-type name="AIDL" enabled="true" />
           <content-type name="YAML" enabled="true" />
           <content-type name="Manifest" enabled="true" />
         </content-types>

@@ -1,5 +1,12 @@
+package patterns.command;
+
+import patterns.factoryPattern.Channel;
+
+import patterns.observer.User;
+
+import patterns.singleton.Server;
+
 import java.util.Collection;
-import java.util.List;
 
 public class ListChannelsCommand implements Command {
     private Server server;

@@ -1,3 +1,14 @@
+package patterns.observer;
+
+import patterns.factoryPattern.Channel;
+
+import patterns.observer.User;
+import patterns.observer.Observer;
+
+import patterns.singleton.Server;
+
+import patterns.strategy.Admin;
+
 import java.util.*;
 
 public class ConcreteChannel implements Channel {
@@ -106,7 +117,9 @@ public class ConcreteChannel implements Channel {
     public void sendMessage(User sender, String message) {
         for(Observer user : users) {
             if (user != sender) {
-                user.update(message);
+                user.update("[ ~ " + sender.getUsername() + "] : " +  message);
+            } else {
+                sender.getPrintWriter().println("[ ~ me ] : " +  message);
             }
         }
     }

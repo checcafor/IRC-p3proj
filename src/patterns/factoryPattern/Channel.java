@@ -1,4 +1,11 @@
+package patterns.factoryPattern;
+
 import java.util.List;
+
+import patterns.observer.Observer;
+import patterns.observer.User;
+
+import patterns.strategy.Admin;
 
 public interface Channel {
     public String getName();

@@ -1,4 +1,7 @@
-import java.io.PrintWriter;
+package patterns.command;
+
+import patterns.observer.*;
+
 import java.util.List;
 
 public class SendMexCommand  implements Command {
@@ -18,7 +21,9 @@ public class SendMexCommand  implements Command {
         if (channel != null) {
             userlist = channel.getUsers();
 
-            channel.sendMessage(user, "[ ~ " + user.getUsername() + "] : " +  message);
+            channel.sendMessage(user, message);
+        } else {
+            user.getPrintWriter().println("you're not in a Channel");
         }
     }
 }

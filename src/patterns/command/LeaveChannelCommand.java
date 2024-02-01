@@ -1,3 +1,8 @@
+package patterns.command;
+
+import patterns.observer.ConcreteChannel;
+import patterns.observer.User;
+
 public class LeaveChannelCommand implements Command {
     private User user;
     private ConcreteChannel channel;

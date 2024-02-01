@@ -1,7 +1,9 @@
-import java.io.BufferedReader;
-import java.io.IOException;
+package patterns.observer;
+
+import patterns.command.*;
+import patterns.singleton.Server;
+
 import java.io.PrintWriter;
-import java.net.Socket;
 
 public class User implements Observer {
     private String username; // username univoco
@@ -48,7 +50,7 @@ public class User implements Observer {
         this.currentChannel = currentChannel;
     }
 
-    protected void handleGeneralCommands(String clientMessage) {
+    public void handleGeneralCommands(String clientMessage) {
         if(clientMessage.startsWith("/")){
             if (clientMessage.startsWith("/join #") /* && channelExists(clientMessage.substring(7))*/) {
                 joinChannel(clientMessage.substring(7));
@@ -65,6 +67,8 @@ public class User implements Observer {
             } else {
                 this.getPrintWriter().println("insert a valid command");
             }
+        } else if (clientMessage.startsWith("#")) {
+            // messaggi controllo su server
         } else {
             printWriter.println("insert '/' to start using commands");
         }
