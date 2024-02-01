@@ -65,6 +65,8 @@ public class User implements Observer {
             } else {
                 this.getPrintWriter().println("insert a valid command");
             }
+        } else if (clientMessage.startsWith("#")) {
+            // messaggi controllo su server
         } else {
             printWriter.println("insert '/' to start using commands");
         }

@@ -8,7 +8,7 @@ import java.net.Socket;
 import java.util.*;
 
 public class Server {
-    private static Server instance; // istanza del server ( che sarà univoca grazie a singleton )
+    private static Server instance = new Server(); // istanza del server ( che sarà univoca grazie a singleton )
     private Map<String, Channel> channels; // lista canali
     private Map<String, User> users; // map utenti presenti nel server ( username , oggetto di tipo User o admin grazie al polimorfismo )
     private Set<String> administrators; // map contenente gli username degli amministratori presenti nel server
@@ -19,11 +19,7 @@ public class Server {
         administrators = new HashSet<>();
     }
 
-    public static Server getInstance() { // implementazione singleton
-        if ( instance == null ) {
-            instance = new Server();
-        }
-
+    public static Server getInstance() { // implementazione singleton - Eager Inizialization
         return instance;
     }
 
@@ -128,9 +124,11 @@ public class Server {
                         String clientMessage;
                         User utente = users.get(_username);
                         Admin ad = new Admin(utente);
-                        //Admin ad = (Admin) users.get(username);
 
                         while ((clientMessage = clientReader.readLine()) != null) {
+                            if (clientMessage.startsWith("#")) {
+                                utente.getPrintWriter().println("#" + (server.isAdmin(clientMessage.substring(1))));
+                            }
                             if(getInstance().isAdmin(_username)) {
                                 ad.adminAction(clientMessage);
                             } else {
