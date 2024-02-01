@@ -1,3 +1,10 @@
+package patterns.command;
+
+import patterns.observer.ConcreteChannel;
+import patterns.observer.User;
+
+import patterns.singleton.Server;
+
 public class JoinChannelCommand implements Command {
     private Server server;
     private User user;

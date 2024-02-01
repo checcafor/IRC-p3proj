@@ -1,3 +1,7 @@
+package patterns.command;
+
+import patterns.observer.*;
+
 import java.util.List;
 
 public class UserListCommand implements Command {

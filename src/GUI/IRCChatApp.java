@@ -1,3 +1,5 @@
+package GUI;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -9,6 +11,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import javax.swing.border.AbstractBorder;
+import patterns.singleton.Server;
 
 public class IRCChatApp extends JFrame {
     private JTextArea chatArea; // messaggi della chat

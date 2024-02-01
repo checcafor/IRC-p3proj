@@ -1,3 +1,9 @@
+package patterns.strategy;
+
+import patterns.observer.User;
+
+import patterns.singleton.Server;
+
 public class Admin extends User {
     private AdminActionStrategy action; // variabile di tipo interfaccia che serve per settare ed eseguire i comandi admin
 

@@ -1,3 +1,9 @@
+package patterns.command;
+
+import patterns.observer.User;
+
+import patterns.singleton.Server;
+
 import java.io.PrintWriter;
 
 public class PrivateMessageCommand implements Command {
@@ -32,7 +38,7 @@ public class PrivateMessageCommand implements Command {
                 recipientWriter.println("[Private from " + sender.getUsername() + "]: " + privateMessage);
                 sender.getPrintWriter().println("[ Message to" +receiverUsername + "] :" + privateMessage);
             } else { // se l'utente non esiste
-                sender.getPrintWriter().println("User " + receiverUsername + " not found.");
+                sender.getPrintWriter().println("patterns.observer.User " + receiverUsername + " not found.");
             }
         } else {
             sender.getPrintWriter().println("Invalid /privmsg command. Usage: /privmsg <username> <message>");

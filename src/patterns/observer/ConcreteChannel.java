@@ -1,3 +1,14 @@
+package patterns.observer;
+
+import patterns.factoryPattern.Channel;
+
+import patterns.observer.User;
+import patterns.observer.Observer;
+
+import patterns.singleton.Server;
+
+import patterns.strategy.Admin;
+
 import java.util.*;
 
 public class ConcreteChannel implements Channel {

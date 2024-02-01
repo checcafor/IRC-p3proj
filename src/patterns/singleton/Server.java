@@ -1,4 +1,8 @@
-import javax.swing.*;
+package patterns.singleton;
+
+import dbConnector.DataToDatabase;
+import dbConnector.RetrieveDataFromDatabase;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -7,10 +11,18 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
 
+import patterns.observer.User;
+import patterns.observer.ConcreteChannel;
+
+import patterns.factoryPattern.Channel;
+import patterns.factoryPattern.ChannelFactory;
+
+import patterns.strategy.Admin;
+
 public class Server {
     private static Server instance = new Server(); // istanza del server ( che sarà univoca grazie a singleton )
     private Map<String, Channel> channels; // lista canali
-    private Map<String, User> users; // map utenti presenti nel server ( username , oggetto di tipo User o admin grazie al polimorfismo )
+    private Map<String, User> users; // map utenti presenti nel server ( username , oggetto di tipo patterns.observer.User o admin grazie al polimorfismo )
     private Set<String> administrators; // map contenente gli username degli amministratori presenti nel server
 
     private Server () {

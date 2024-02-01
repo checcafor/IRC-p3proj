@@ -1,3 +1,5 @@
+package patterns.command;
+
 public class BaseCommandHandler {
     private Command command;
 
