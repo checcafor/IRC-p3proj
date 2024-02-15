@@ -23,6 +23,41 @@
   </p>
 </div>
 
+<!-- Traccia -->
+# Traccia
+Simulare una chat multiutente	basata su IRC. Utilizzare un approccio client/server.<br>
+
+### Server:
+* Permette agli utenti di connettersi
+* Mostra agli utenti una serie di possibili canali attivi (identificati con #)
+* Rappresenta un gruppo in cui tutti gli utenti connessi possono inviare messaggi visibili a tutti coloro che sono connessi in quel canale
+* Permette all'utente di cambiare il canale su cui è connesso
+* Gestisce la collisione tra nomi utenti uguali
+* Permette a due utenti di parlare in privato
+
+### Client:
+* Si connette ad un server specificando un nome utente, non è richiesta la password
+* Può richiedere la lista dei canali inviando
+  * Comando: `/list`
+* Può connettersi ad un canale
+  * Comando: `/join #channel_name`
+* Può vedere gli utenti connessi
+  * Comando: `/users`
+* Può inviare messaggi
+  * Comando `/msg messaggio`
+* Può inviare un messaggio privat ad un utente
+  * Comando: `/privmsg nickname messaggio`
+* Può cambiare il canale su cui è connesso in qualunque momento
+
+Implementare l'utente <i><b>amministratore</b></i> che può:
+* Espellere un utente dal canale:
+  * Comando: `/kick nickname`
+* Bannare/sbannare un utente dal canale:
+  * Comando: `/ban nickname`
+  * Comando: `/unban nickname`
+* Promuovere un utente come moderatore:
+  * Comando: `/promote nickname`
+
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
@@ -102,7 +137,7 @@ Di seguito è riportata la struttura gerarrchica della divisione in package dei 
 
 | Descrizione del Pattern                                                                                                             | Schema                                                                              |
 |-------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------|
-| <b>Singleton</b><br/>utilizzato per l'unica istanza del server                                                                      | <center><img src="readmeSRC/Server.png" width="300" height="300"></center>          |
+| <b>Singleton</b><br/>utilizzato per l'unica istanza del server                                                                      | <center><img src="readmeSRC/Server.png" width="w00" height="300"></center>          |
 | <b>Command</b><br/>utilizzato per implementare i singoli comandi utente (quelli di base, e comuni anche ad admin)                   | <center><img src="readmeSRC/Command.png" width="500" height="500"></center>         |
 | <b>Factory Pattern</b><br/> utilizzato per la creazione di canali. Utilizzato in quanto si ha solo una tipologia di canali          | <center><img src="readmeSRC/Factory_Pattern.png" width="500" height="300"></center> |
 | <b>Strategy</b><br/> utilizzato per implementare i comandi riservati agli Admin                                                     | <center><img src="readmeSRC/Strategy.png" width="450" height="200"></center>        |
@@ -115,10 +150,8 @@ Di seguito è riportata la struttura gerarrchica della divisione in package dei 
 
 1. Eseguire per prima cosa il server, che si trova al seguente percorso: `src/patterns/singleton/Server.java`
 2. Eseguire più istanze del cliente, che si trova al seguente percorso: `src/GUI/IRCChatApp.java`
-3. Eseguire quindi tramite l'interfaccia appena aperta un nome utente
+3. Inserire quindi tramite l'interfaccia appena aperta un nome utente (che deve essere univoco) per accedere al server
 4. Iniziare a mesaggiare!
-
-
 
 <!-- LICENSE -->
 ## License
