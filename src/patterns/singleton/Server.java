@@ -58,9 +58,9 @@ public class Server {
      * @param name Il nome del nuovo canale
      */
     public void addChannel (String name) { // metodo per aggiungere canali
-        ChannelFactory factory = new ChannelFactory();
-        ConcreteChannel channel = (ConcreteChannel) factory.createChannel(name);
-        channels.put(name, channel);
+        ChannelFactory factory = new ChannelFactory();  // creata un istanza della ChannelFactory per creare un canale
+        ConcreteChannel channel = (ConcreteChannel) factory.createChannel(name);    // creazione di un canale
+        channels.put(name, channel);    // aggiunta alla lista dei canali
     }
 
     /**
@@ -136,9 +136,10 @@ public class Server {
      */
     public static void main(String[] args) {
         Server server = Server.getInstance();
-
+        // aggiunta canali al server
         server.addChannel("general");
         server.addChannel("default");
+        // aggiunta admin di default
         server.addAdmin("kekka");
 
         try {
@@ -159,23 +160,25 @@ public class Server {
                 boolean userAlreadyExist;
 
                 do {
-                    username = clientReader.readLine().trim();
-                    userAlreadyExist = users.containsKey(username);
+                    username = clientReader.readLine().trim();          // viene letto il nome inserito dall'utente
+                    userAlreadyExist = users.containsKey(username);     // viene controllato che il nome non esista già
 
+                    // se l'utente con quel nome già esiste
                     if (userAlreadyExist) {
-                        // Send a message to the client indicating that the username is already taken
+                        // viene inviato un messaggio di errore al client
                         clientWriter.println("Username is already taken. Please choose a different username:");
                     } else {
-                        // Send a message to the client indicating that the username is accepted
+                        // viene restituito un messaggio di conferma
                         clientWriter.println("OK");
                     }
                 } while (userAlreadyExist);
 
                 User user;
+                // se l'utente risulta negli admin
                 if (administrators.contains(username)) {
-                    user = new Admin(username);
+                    user = new Admin(username); // gli viene istanziata un'oggetto di tipo Admin
                 } else {
-                    user = new User(username);
+                    user = new User(username);  // altrimenti uno di tipo User
                 }
 
                 user.setPrintWriter(clientWriter);
@@ -183,10 +186,10 @@ public class Server {
                 user.getPrintWriter().println("Hi " + user.getUsername() + "! Welcome in the server");
 
                 String logMessage = user.getUsername() + " has joined the server";
-                DataToDatabase logToDatabase = new DataToDatabase(logMessage);
+                DataToDatabase logToDatabase = new DataToDatabase(logMessage);                      // viene registrato il log nel database
 
-                RetrieveDataFromDatabase retriever = new RetrieveDataFromDatabase(logMessage);
-                System.out.println("[LOG ~ " + retriever.getRetrievedDate() + "]: " + logMessage);
+                RetrieveDataFromDatabase retriever = new RetrieveDataFromDatabase(logMessage);      // viene recuperato l'ultimo log dal db (qusto per ottenere consistenza)
+                System.out.println("[LOG ~ " + retriever.getRetrievedDate() + "]: " + logMessage);  // viene stampato il log anche sul terminale del Server
 
                 String _username = username;
 
@@ -196,31 +199,35 @@ public class Server {
                         User utente = users.get(_username);
                         Admin ad = new Admin(utente);
 
+                        // ciclo per la lettura dei messaggi dal client
                         while ((clientMessage = clientReader.readLine()) != null) {
+                            // se il messaggio inizia con "#", verifica se l'utente è un amministratore e invia la risposta al client per il controllo nel backand
                             if (clientMessage.startsWith("#")) {
                                 utente.getPrintWriter().println("#" + (server.isAdmin(clientMessage.substring(1))));
                             }
+                            // se l'utente è un amministratore, gestisce l'azione dell'amministratore
                             if(getInstance().isAdmin(_username)) {
                                 ad.adminAction(clientMessage);
-                            } else {
+                            } else { // altrimenti, gestisce i comandi di base dell'utente
                                 utente.handleGeneralCommands(clientMessage);
                             }
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
                     } finally {
-                        User quittingUser = server.getUserByName(_username);
+                        User quittingUser = server.getUserByName(_username); // viene recuperato l'oggetto dell'utente che sta uscendo dal server
 
+                        // se l'utente si trovava prima in qualche canale
                         if(quittingUser.getCurrentChannel() != null){
-                            quittingUser.leaveChannel();
+                            quittingUser.leaveChannel();    // si fa uscire l'utente dal canale in cui si trovava
                         }
-                        users.remove(_username);
+                        users.remove(_username);    // viene rimosso quindi dalla lista degli utenti del server
 
                         String logoutMessage = _username + " has leaved the server";
-                        DataToDatabase logoutToDatabase = new DataToDatabase(logoutMessage);
+                        DataToDatabase logoutToDatabase = new DataToDatabase(logoutMessage);    // viene registrato il log sul database
 
-                        RetrieveDataFromDatabase retrieverLogout = new RetrieveDataFromDatabase(logoutMessage);
-                        System.out.println("[LOG ~ " + retrieverLogout.getRetrievedDate() + "]: " + logoutMessage);
+                        RetrieveDataFromDatabase retrieverLogout = new RetrieveDataFromDatabase(logoutMessage);     // viene recuperato l'ultimo log dal db (qusto per ottenere consistenza)
+                        System.out.println("[LOG ~ " + retrieverLogout.getRetrievedDate() + "]: " + logoutMessage); // viene stampato il log anche sul terminale del server
                     }
                 }).start();
             }

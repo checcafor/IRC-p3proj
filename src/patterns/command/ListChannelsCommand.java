@@ -33,6 +33,7 @@ public class ListChannelsCommand implements Command {
     public void execute() {
         Collection<Channel> channels = server.getChannels(); // ottiene l'elenco dei canali attivi dal server
         StringBuilder channelList = new StringBuilder("Active channels: ");
+        // per ogni canale
         for (Channel channel : channels) {
             channelList.append("#").append(channel.getName()).append(" "); // costruisce la lista dei canali attivi
         }

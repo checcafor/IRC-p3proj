@@ -47,6 +47,7 @@ public class PrivateMessageCommand implements Command {
                 return;
             }
 
+            // se il ricevitore del messaggio è stato trovato
             if (receiver != null) {
                 PrintWriter recipientWriter = receiver.getPrintWriter();
                 // invia il messaggio privato al destinatario
@@ -56,7 +57,7 @@ public class PrivateMessageCommand implements Command {
             } else { // se l'utente destinatario non esiste, fornisce un messaggio di errore al mittente
                 sender.getPrintWriter().println("user " + receiverUsername + " not found.");
             }
-        } else { // se il comando è malformato, fornisce un messaggio di errore al mittente
+        } else { // se il formto del comando non è corretto, fornisce un messaggio di errore al mittente
             sender.getPrintWriter().println("Invalid /privmsg command. Usage: /privmsg <username> <message>");
         }
     }

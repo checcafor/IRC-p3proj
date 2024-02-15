@@ -101,16 +101,15 @@ public class ConcreteChannel implements Channel {
             admin.getPrintWriter().println("user not found ! ");
             return;
         }
-        if (bannedUsers.contains(user.getUsername())) {
+        if (bannedUsers.contains(user.getUsername())) { // se l'utente risulta bannato nel canale corrente
             admin.getPrintWriter().println(user.getUsername() + " is already banned");
-        } else if (!users.contains(user)) {
+        } else if (!users.contains(user)) { // se lìutente non si trova nel canale corrente
             admin.getPrintWriter().println(user.getUsername() + " isn't in this channel");
         } else {
             notify(user.getUsername() + " has been banned");
-            bannedUsers.add(user.getUsername());
-            user.leaveChannel();
-            user.setCurrentChannel(null);
-            //admin.getPrintWriter().println("You've banned " + user.getUsername());
+            bannedUsers.add(user.getUsername());    // registrazione dell'utente nella lista dei bannati
+            user.leaveChannel();                    // viene espulso dal canale
+            user.setCurrentChannel(null);           // viene "resettato" il canale in cui si trova essendo stato bannato ed espulso
         }
     }
 
@@ -124,8 +123,8 @@ public class ConcreteChannel implements Channel {
             admin.getPrintWriter().println("user not found ! ");
             return;
         }
-        if (bannedUsers.contains(user.getUsername())) {
-            bannedUsers.remove(user.getUsername());
+        if (bannedUsers.contains(user.getUsername())) { // se l'utente risulta bannato nel canale corrente
+            bannedUsers.remove(user.getUsername());     // viene rimosso dalla lista degli utenti bannati
             user.getPrintWriter().println("you've been unbanned from #" + name);
         } else {
             admin.getPrintWriter().println(user.getUsername() + " is already unbanned or has never been banned");
@@ -145,7 +144,7 @@ public class ConcreteChannel implements Channel {
 
         Server server = Server.getInstance();
 
-        if(!server.isAdmin(user.getUsername())) {
+        if(!server.isAdmin(user.getUsername())) {   // se l'utente da promuovere non è già un'admin
 
             Admin new_admin = new Admin(user);          // viene creato un'oggetto admin, copia di quello utente ma con privilegi da admin
             removeUser(user);                           // viene rimosso l'utente (base) dalla lista presente nel canale
@@ -154,7 +153,7 @@ public class ConcreteChannel implements Channel {
             server.addAdmin(new_admin.getUsername());   // viene aggiunto il nome delll'utente (che ora figura come admin) alla lista degli admin del server
             addUser(new_admin);                         // viene aggiunto l'utente (che ora figura come admin) alla lista degli utenti connessi al canale
 
-            if (new_admin.getPrintWriter() != null) {
+            if (new_admin.getPrintWriter() != null) {   // viene segnala la promozione all'utente appena promosso
                 new_admin.getPrintWriter().println("Now you're admin of the server!");
             }
         } else {
@@ -168,10 +167,11 @@ public class ConcreteChannel implements Channel {
      * @param message Il messaggio da inviare
      */
     public void sendMessage(User sender, String message) {
+        // per tutti gli utenti
         for(Observer user : users) {
-            if (user != sender) {
+            if (user != sender) {   // se non è il mittende del messaggio
                 user.update("[ ~ " + sender.getUsername() + "] : " +  message);
-            } else {
+            } else {    // se invece è il mittende del messaggio
                 sender.getPrintWriter().println("[ ~ me ] : " +  message);
             }
         }

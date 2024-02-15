@@ -29,6 +29,7 @@ public class UserListCommand implements Command {
     @Override
     public void execute() {
 
+        // se l'utente si trova in un canale
         if (channel != null) {
             List<Observer> users = channel.getUsers();
             user.getPrintWriter().println("In #" + channel.getName() + " there are these users:");

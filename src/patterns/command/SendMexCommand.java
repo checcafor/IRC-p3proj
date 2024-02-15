@@ -32,9 +32,10 @@ public class SendMexCommand  implements Command {
      */
     @Override
     public void execute() { // utilizzare funzione da concretechannel
+        // se l'utente si trova in un canale
         if (channel != null) {
             userlist = channel.getUsers();
-
+            // invia il messaggio a tutti gli appartenenti al canale tranne all'utente
             channel.sendMessage(user, message);
         } else {
             user.getPrintWriter().println("you're not in a Channel");

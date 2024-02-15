@@ -90,25 +90,27 @@ public class User implements Observer {
      * @param clientMessage Il messaggio inviato dall'utente
      */
     public void handleGeneralCommands(String clientMessage) {
+        // se il messaggio inizia per / significa che l'utente vuole eseguire un comando
         if(clientMessage.startsWith("/")){
-            if (clientMessage.startsWith("/join #") /* && channelExists(clientMessage.substring(7))*/) {
-                joinChannel(clientMessage.substring(7));
-            } else if (clientMessage.equals("/leave")) {
-                leaveChannel();
-            } else if (clientMessage.startsWith("/msg ")) {
-                sendMessage(clientMessage.substring(5));
-            } else if (clientMessage.equals("/list")) {
-                channelList();
-            } else if (clientMessage.equals("/users")) {
-                userList();
-            } else if (clientMessage.startsWith("/privmsg ")) {
-                sendmexpriv(clientMessage.substring(9));
+            if (clientMessage.startsWith("/join #")) { // se il comando inizia per "/join #"
+                joinChannel(clientMessage.substring(7));    // viene eseguito il comando per entrare in un canale
+            } else if (clientMessage.equals("/leave")) { // se il comando inizia per "/leave"
+                leaveChannel(); // viene eseguito il comando per uscire da un canale
+            } else if (clientMessage.startsWith("/msg ")) { // se il comando inizia per "/msg "
+                sendMessage(clientMessage.substring(5)); // viene eseguito il comando per inviare un messaggio nel canale corrente
+            } else if (clientMessage.equals("/list")) { // se il comando inizia per "/list"
+                channelList(); // viene eseguito il comando per ottenere la lista dei canali attivi nel server
+            } else if (clientMessage.equals("/users")) { // se il comando inizia per "/users"
+                userList(); // viene eseguito il comando per ottenere la lista di utenti nel canale corrente
+            } else if (clientMessage.startsWith("/privmsg ")) { // se il comando inizia per "/privmsg "
+                sendmexpriv(clientMessage.substring(9)); // viene eseguito il comando per inviare un messaggio in privato ad un utente
             } else {
                 this.getPrintWriter().println("insert a valid command");
             }
         } else if (clientMessage.startsWith("#")) {
             // messaggi controllo su server
         } else {
+            // altrimenti il messaggio inviato dall'utente non è un comando noto
             printWriter.println("insert '/' to start using commands");
         }
     }
