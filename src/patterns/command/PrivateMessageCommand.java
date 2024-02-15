@@ -54,7 +54,7 @@ public class PrivateMessageCommand implements Command {
                 // invia una conferma al mittente del messaggio inviato
                 sender.getPrintWriter().println("[ Message to" +receiverUsername + "] :" + privateMessage);
             } else { // se l'utente destinatario non esiste, fornisce un messaggio di errore al mittente
-                sender.getPrintWriter().println("patterns.observer.User " + receiverUsername + " not found.");
+                sender.getPrintWriter().println("user " + receiverUsername + " not found.");
             }
         } else { // se il comando è malformato, fornisce un messaggio di errore al mittente
             sender.getPrintWriter().println("Invalid /privmsg command. Usage: /privmsg <username> <message>");

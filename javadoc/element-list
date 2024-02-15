@@ -1,0 +1,7 @@
+dbConnector
+GUI
+patterns.command
+patterns.factoryPattern
+patterns.observer
+patterns.singleton
+patterns.strategy

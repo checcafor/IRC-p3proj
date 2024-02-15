@@ -4,7 +4,6 @@ package patterns.command;
  * Questa classe rappresenta un gestore base per l'esecuzione di comandi.
  * Un gestore di comandi contiene un singolo comando e può eseguirlo quando richiesto.
  */
-
 public class BaseCommandHandler {
     private Command command;
 
