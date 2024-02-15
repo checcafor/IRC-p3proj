@@ -11,39 +11,73 @@ import patterns.strategy.Admin;
 
 import java.util.*;
 
+/**
+ * Questa classe rappresenta un canale concreto all'interno del sistema di messaggistica.
+ * Implementa l'interfaccia Channel e gestisce gli utenti, le operazioni sugli utenti e i messaggi all'interno del canale.
+ */
 public class ConcreteChannel implements Channel {
     private String name; // nome del canale
     private List<Observer> users; // lista contenente gli oggetti che implementano l'interfaccia ( user e admin )
-    private Set<String> bannedUsers;
+    private Set<String> bannedUsers; // insieme degli utenti bannati dal canale
 
-    public ConcreteChannel(String name) { // costruttore
+    /**
+     * Costruttore della classe che inizializza un nuovo canale con il nome specificato.
+     * @param name Il nome del nuovo canale
+     */
+    public ConcreteChannel(String name) {
         this.name = name;
         users = new ArrayList<>();
         bannedUsers = new HashSet<>();
     }
 
+    /**
+     * Restituisce il nome del canale.
+     * @return Il nome del canale
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Aggiunge un nuovo utente al canale.
+     * @param user L'utente da aggiungere al canale
+     */
     public void addUser(Observer user) {
         users.add(user);
     }
 
+    /**
+     * Rimuove un utente dal canale.
+     * @param user L'utente da rimuovere dal canale
+     */
     public void removeUser(Observer user) {
         users.remove(user);
     }
 
+    /**
+     * Notifica a tutti gli utenti del canale un determinato messaggio.
+     * @param message Il messaggio da notificare
+     */
     public void notify (String message) {
         for(Observer user : users) {
             user.update(message);
         }
     }
-
+    /**
+     * Restituisce la lista degli utenti attualmente nel canale.
+     * @return La lista degli utenti nel canale
+     */
     public List<Observer> getUsers () {
         return users;
     }
 
+    // Metodi per la gestione degli utenti e dei permessi
+
+    /**
+     * Espelle un utente dal canale.
+     * @param admin L'amministratore che esegue l'operazione
+     * @param user L'utente da espellere dal canale
+     */
     public void kickUser(Admin admin, User user) {
         if(user == null){   // se l'oggetto dell'utente cercato è null allora esso non esiste
             admin.getPrintWriter().println("user not found ! ");
@@ -57,7 +91,11 @@ public class ConcreteChannel implements Channel {
             admin.getPrintWriter().println(user.getUsername() + " isn't in this channel");
         }
     }
-
+    /**
+     * Banna un utente dal canale.
+     * @param admin L'amministratore che esegue l'operazione
+     * @param user L'utente da bannare dal canale
+     */
     public void banUser(Admin admin,User user) {
         if(user == null){   // se l'oggetto dell'utente cercato è null allora esso non esiste
             admin.getPrintWriter().println("user not found ! ");
@@ -76,6 +114,11 @@ public class ConcreteChannel implements Channel {
         }
     }
 
+    /**
+     * Rimuove il ban di un utente dal canale.
+     * @param admin L'amministratore che esegue l'operazione
+     * @param user L'utente da sbannare dal canale
+     */
     public void unbanUser(Admin admin,User user) {
         if(user == null){   // se l'oggetto dell'utente cercato è null allora esso non esiste
             admin.getPrintWriter().println("user not found ! ");
@@ -89,6 +132,11 @@ public class ConcreteChannel implements Channel {
         }
     }
 
+    /**
+     * Promuove un utente a un ruolo superiore all'interno del canale.
+     * @param admin L'amministratore che esegue l'operazione
+     * @param user L'utente da promuovere
+     */
     public void promote(Admin admin, User user) {
         if(user == null){   // se l'oggetto dell'utente cercato è null allora esso non esiste
             admin.getPrintWriter().println("user not found ! ");
@@ -114,6 +162,11 @@ public class ConcreteChannel implements Channel {
         }
     }
 
+    /**
+     * Invia un messaggio nel canale.
+     * @param sender L'utente che invia il messaggio
+     * @param message Il messaggio da inviare
+     */
     public void sendMessage(User sender, String message) {
         for(Observer user : users) {
             if (user != sender) {
@@ -124,6 +177,11 @@ public class ConcreteChannel implements Channel {
         }
     }
 
+    /**
+     * Verifica se un utente è stato bannato dal canale.
+     * @param user L'utente da controllare
+     * @return true se l'utente è stato bannato, altrimenti false
+     */
     public boolean searchBannedUser (User user) {
         return bannedUsers.contains(user.getUsername());
     }

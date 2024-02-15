@@ -19,6 +19,10 @@ import patterns.factoryPattern.ChannelFactory;
 
 import patterns.strategy.Admin;
 
+/**
+ * Questa classe implementa il pattern Singleton per il server di messaggistica.
+ * Il server gestisce l'accesso degli utenti, la creazione e la gestione dei canali, e le interazioni tra gli utenti.
+ */
 public class Server {
     private static Server instance = new Server(); // istanza del server ( che sarà univoca grazie a singleton )
     private Map<String, Channel> channels; // lista canali
@@ -31,50 +35,105 @@ public class Server {
         administrators = new HashSet<>();
     }
 
+    /**
+     * Restituisce l'unica istanza del server (implementazione del pattern Singleton).
+     * @return L'unica istanza del server
+     */
     public static Server getInstance() { // implementazione singleton - Eager Inizialization
         return instance;
     }
 
+    /**
+     * Restituisce l'insieme degli username degli amministratori presenti nel server.
+     * @return L'insieme degli username degli amministratori
+     */
     public Set<String> getAdministrators() {
         return administrators;
     }
 
+    // Metodi per la gestione dei canali e degli utenti nel server
+
+    /**
+     * Aggiunge un nuovo canale al server con il nome specificato.
+     * @param name Il nome del nuovo canale
+     */
     public void addChannel (String name) { // metodo per aggiungere canali
         ChannelFactory factory = new ChannelFactory();
         ConcreteChannel channel = (ConcreteChannel) factory.createChannel(name);
         channels.put(name, channel);
     }
 
+    /**
+     * Aggiunge un amministratore al server con il nome specificato.
+     * @param name Il nome dell'amministratore
+     */
     public void addAdmin (String name) {
         administrators.add(name);
     }
 
+    /**
+     * Aggiunge un nuovo utente al server.
+     * @param user L'utente da aggiungere
+     */
     public void addUserToServer (User user) {
         users.put(user.getUsername(), user);
     }
+    /**
+     * Rimuove un utente dal server.
+     * @param user L'utente da rimuovere
+     */
     public void removeUserToServer(User user){
         users.remove(user.getUsername(), user);
     }
 
+    /**
+     * Restituisce il canale con il nome specificato.
+     * @param name Il nome del canale da cercare
+     * @return Il canale corrispondente al nome specificato, o null se non esiste
+     */
     public Channel getChannelByName (String name) {
         return channels.get(name);
     }
+
+    /**
+     * Restituisce una collezione contenente tutti i canali presenti nel server.
+     * @return Una collezione contenente tutti i canali del server
+     */
     public Collection<Channel> getChannels () {
         return channels.values();
     }
 
+    /**
+     * Restituisce la mappa degli utenti presenti nel server.
+     * @return La mappa degli utenti del server (username, utente)
+     */
     public Map<String, User> getUsers(){
         return users;
     }
 
+    /**
+     * Restituisce l'utente con lo username specificato.
+     * @param username Lo username dell'utente da cercare
+     * @return L'utente corrispondente allo username specificato, o null se non esiste
+     */
     public User getUserByName (String username) {
         return users.get(username);
     }
 
+    /**
+     * Verifica se l'utente con lo username specificato è un amministratore del server.
+     * @param username Lo username dell'utente da controllare
+     * @return true se l'utente è un amministratore, false altrimenti
+     */
     public boolean isAdmin (String username) {
         return administrators.contains(username);
     }
 
+    /**
+     * Metodo principale per avviare il server.
+     * Il server gestisce le richieste dei client e le interazioni tra gli utenti.
+     * @param args Argomenti della riga di comando
+     */
     public static void main(String[] args) {
         Server server = Server.getInstance();
 

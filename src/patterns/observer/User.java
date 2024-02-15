@@ -5,6 +5,10 @@ import patterns.singleton.Server;
 
 import java.io.PrintWriter;
 
+/**
+ * Questa classe rappresenta un utente nel sistema di messaggistica.
+ * Gli utenti possono inviare e ricevere messaggi, unirsi e lasciare canali, e eseguire varie operazioni.
+ */
 public class User implements Observer {
     private String username; // username univoco
     private ConcreteChannel currentChannel; // canale dove si trova l'utente
@@ -12,12 +16,20 @@ public class User implements Observer {
     private PrintWriter printWriter; // oggetto PrintWriter che gestisce l'invio di messaggi al client
     // private BufferedReader bufferReader;
 
-    public User(String username) { // costruttore
+    /**
+     * Costruttore della classe che inizializza un nuovo utente con il nome specificato.
+     * @param username Il nome univoco dell'utente
+     */
+    public User(String username) {
         this.username = username;
         currentChannel = null;
         invoker = new BaseCommandHandler();
     }
 
+    /**
+     * Costruttore di copia che crea un nuovo utente copiando i dati da un altro utente.
+     * @param user L'utente da copiare
+     */
     public User(User user){
         this.username = user.getUsername();
         this.currentChannel = user.getCurrentChannel();
@@ -25,31 +37,58 @@ public class User implements Observer {
         this.invoker = user.getInvoker();
     }
 
+    /**
+     * Restituisce il nome univoco dell'utente.
+     * @return Il nome univoco dell'utente
+     */
     public String getUsername () {
         return username;
     }
 
+    /**
+     * Restituisce il canale attuale in cui si trova l'utente.
+     * @return Il canale attuale dell'utente
+     */
     public ConcreteChannel getCurrentChannel () {
         return currentChannel;
     }
 
+    /**
+     * Imposta il PrintWriter per l'utente per inviare messaggi al client.
+     * @param clientWriter L'oggetto PrintWriter per inviare messaggi al client
+     */
     public void setPrintWriter (PrintWriter clientWriter) {
         this.printWriter = clientWriter;
     }
 
-    /* public void setBufferReader (BufferedReader clientReader) {
-        this.bufferReader = clientReader;
-    } */
-
+    /**
+     * Restituisce il PrintWriter associato all'utente.
+     * @return L'oggetto PrintWriter associato all'utente
+     */
     public PrintWriter getPrintWriter() {
         return printWriter;
     }
 
+    /**
+     * Restituisce il gestore dei comandi associato all'utente.
+     * Il gestore dei comandi viene utilizzato per eseguire i comandi generici dell'utente.
+     * @return Il gestore dei comandi associato all'utente
+     */
     public BaseCommandHandler getInvoker(){return invoker;}
+
+    /**
+     * Imposta il canale attuale dell'utente.
+     * @param currentChannel Il canale attuale dell'utente
+     */
     public void setCurrentChannel(ConcreteChannel currentChannel) {
         this.currentChannel = currentChannel;
     }
 
+    // Metodi per gestire i comandi generici dell'utente
+    /**
+     * Gestisce i comandi generici inviati dall'utente.
+     * @param clientMessage Il messaggio inviato dall'utente
+     */
     public void handleGeneralCommands(String clientMessage) {
         if(clientMessage.startsWith("/")){
             if (clientMessage.startsWith("/join #") /* && channelExists(clientMessage.substring(7))*/) {
@@ -74,6 +113,10 @@ public class User implements Observer {
         }
     }
 
+    /**
+     * Unisce l'utente al canale specificato.
+     * @param channel Il nome del canale a cui unirsi
+     */
     public void joinChannel (String channel) {
         User user = Server.getInstance().getUserByName(this.getUsername()); // viene recuperato l'utente / admin che vuole eseguire il comando
         JoinChannelCommand join = new JoinChannelCommand(user, channel);    // crea un'istanza del comando join
@@ -81,6 +124,9 @@ public class User implements Observer {
         invoker.handleCommand();  // esegue il comando join
     }
 
+    /**
+     * Abbandona il canale attuale.
+     */
     public void leaveChannel () {
         User user = Server.getInstance().getUserByName(this.getUsername()); // viene recuperato l'utente / admin che vuole eseguire il comando
         LeaveChannelCommand leave = new LeaveChannelCommand(user); // crea un'istanza del comando leave
@@ -88,6 +134,10 @@ public class User implements Observer {
         invoker.handleCommand();  // esegue il comando leave
     }
 
+    /**
+     * Invia un messaggio nel canale attuale.
+     * @param message Il messaggio da inviare
+     */
     public void sendMessage (String message) {
         User user = Server.getInstance().getUserByName(this.getUsername()); // viene recuperato l'utente / admin che vuole eseguire il comando
         SendMexCommand sendmex = new SendMexCommand(user, message); // crea un'istanza del comando msg
@@ -95,6 +145,9 @@ public class User implements Observer {
         invoker.handleCommand();     // esegue il comando msg
     }
 
+    /**
+     * Ottiene l'elenco degli utenti nel canale attuale.
+     */
     public void userList () {
         User user = Server.getInstance().getUserByName(this.getUsername()); // viene recuperato l'utente / admin che vuole eseguire il comando
         UserListCommand userl = new UserListCommand(user); // crea un'istanza del comando users
@@ -102,12 +155,20 @@ public class User implements Observer {
         invoker.handleCommand();   // esegue il comando users
     }
 
+    /**
+     * Ottiene l'elenco dei canali attivi nel server.
+     */
     public void channelList () {
         User user = Server.getInstance().getUserByName(this.getUsername()); // viene recuperato l'utente / admin che vuole eseguire il comando
         ListChannelsCommand list = new ListChannelsCommand(user); // crea un'istanza del comando list
         invoker.setCommand(list); // imposta il comando di list come comando da eseguire
         invoker.handleCommand();  // esegue il comando list
     }
+
+    /**
+     * Invia un messaggio privato a un altro utente.
+     * @param message Il messaggio privato da inviare
+     */
     public void sendmexpriv (String message) {
         User user = Server.getInstance().getUserByName(this.getUsername()); // viene recuperato l'utente / admin che vuole eseguire il comando
         PrivateMessageCommand privmex = new PrivateMessageCommand(user, message); // crea un'istanza del comando privmsg
@@ -115,6 +176,11 @@ public class User implements Observer {
         invoker.handleCommand();     // esegue il comando privmsg
     }
 
+    /**
+     * Metodo richiamato quando l'utente riceve un aggiornamento.
+     * Aggiorna il client dell'utente con il messaggio ricevuto.
+     * @param message Il messaggio ricevuto
+     */
     @Override
     public void update(String message) {
         this.printWriter.println(message);
